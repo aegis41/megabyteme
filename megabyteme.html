@@ -53,7 +53,59 @@
       <input type="button" value="FIREWALL" onClick="FirewallUpgrade();">
     </div>
     <div id="right">
-    
+      <table id="components">
+        <tr>
+          <th>Level</th>
+          <td id="cpu-level">1</td>
+          <td rowspan="2"><input type="button" value="CPU" onClick="UpgradeCPU();"></td>
+        </tr>
+        <tr>
+          <th>Bytes/Second</th>
+          <td id="cpu-bps">1</td>
+        </tr>
+        <tr>
+          <th>Level</th>
+          <td id="mobo-level">1</td>
+          <td rowspan="2"><input type="button" value="MOBO" onClick="UpgradeMOBO();"></td>
+        </tr>
+        <tr>
+          <th>Bytes/Second</th>
+          <td id="mobo-bps">1</td>
+        </tr>
+          <th>Level</th>
+          <td id="ram-level">1</td>
+          <td rowspan="2"><input type="button" value="RAM" onClick="UpgradeRAM();"></td>
+        </tr>
+        <tr>
+          <th>Bytes/Second</th>
+          <td id="ram-bps">1</td>
+        </tr>
+          <th>Level</th>
+          <td id="av-level">1</td>
+          <td rowspan="2"><input type="button" value="Anti-Virus" onClick="UpgradeAV();"></td>
+        </tr>
+        <tr>
+          <th>Bytes/Second</th>
+          <td id="av-bps">1</td>
+        </tr>
+          <th>Level</th>
+          <td id="mw-level">1</td>
+          <td rowspan="2"><input type="button" value="Malware Agent" onClick="UpgradeMW();"></td>
+        </tr>
+        <tr>
+          <th>Bytes/Second</th>
+          <td id="mw-bps">1</td>
+        </tr>
+      </table>
+      <table>
+        <tr>
+          <th colspan="2">UPGRADE POINTS</th>
+        </tr>
+        <tr>
+          <td id="used-upgrade">0</td>
+          <td id="available-upgrade">0</td>
+        </tr>
+      </table>
     </div>
   </div>
 </body>
