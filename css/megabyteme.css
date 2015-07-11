@@ -3,4 +3,67 @@ table
   border-style: solid;
   border-width: 1px;
   border-color: black;
+	width: 98%;
+}
+
+#container
+{
+	width: 900px;
+}
+
+#left
+{
+	float: left;
+	width: 48%;
+}
+
+#right {
+	float: right;
+	width: 48%;
+}
+
+#bytes th
+{
+	width:40%;
+	text-align: left;
+	padding: 10px;
+}
+
+#components th
+{
+	text-align: left;
+	width: 30;
+	padding: 10px;
+}
+
+#components .c-data
+{
+	width: 18%;
+}
+
+#components .c-button
+{
+	width: 48%;
+}
+
+#components input
+{
+	width:98%;
+	height:30px;
+}
+
+#upgrade-points td
+{
+	text-align:center;
+}
+
+#firewall
+{
+	font-size: 24pt;
+	width:98%;
+	height: 75px;
+}
+
+#mal-softs td{
+	text-align: center;
 }

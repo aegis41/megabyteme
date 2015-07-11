@@ -18,8 +18,8 @@
           <td id="total-bytes">0</td>
         </tr>
         <tr>
-          <th>Bytes/Min</th>
-          <td id="bytes-per-min">0</td>
+          <th>Bytes/Sec</th>
+          <td id="bytes-per-sec">0</td>
         </tr>
         <tr>
           <th>Sacrificed Bytes</th>
@@ -53,57 +53,62 @@
           <th>Total Fixes</th><td id="total-fixed">0</td>
         </tr>
       </table>
-      <input type="button" value="FIREWALL" onClick="FirewallUpgrade();">
+      <input type="button" value="FIREWALL" id="firewall" onClick="FirewallUpgrade();">
     </div>
     <div id="right">
+			<h2>Components</h2>
       <table id="components">
         <tr>
           <th>Level</th>
-          <td id="cpu-level">1</td>
-          <td rowspan="2"><input type="button" value="CPU" id="cpu-btn" onClick="Upgrade(0);"></td>
+          <td id="cpu-level" class="c-data">1</td>
+          <td rowspan="2" class="c-button"><input type="button" value="CPU" id="cpu-btn" onClick="Upgrade(0);"></td>
         </tr>
         <tr>
           <th>Bytes/Second</th>
-          <td id="cpu-bps">1</td>
+          <td id="cpu-bps" class="c-data">1</td>
         </tr>
         <tr>
           <th>Level</th>
-          <td id="mobo-level">1</td>
-          <td rowspan="2"><input type="button" value="MOBO" id="mobo-btn" onClick="Upgrade(1);"></td>
+          <td id="mobo-level" class="c-data">1</td>
+          <td rowspan="2" class="c-button"><input type="button" value="MOBO" id="mobo-btn" onClick="Upgrade(1);"></td>
         </tr>
         <tr>
           <th>Bytes/Second</th>
-          <td id="mobo-bps">1</td>
+          <td id="mobo-bps" class="c-data">1</td>
         </tr>
           <th>Level</th>
-          <td id="ram-level">1</td>
-          <td rowspan="2"><input type="button" value="RAM" id="ram-btn" onClick="Upgrade(2);"></td>
+          <td id="ram-level" class="c-data">1</td>
+          <td rowspan="2" class="c-button"><input type="button" value="RAM" id="ram-btn" onClick="Upgrade(2);"></td>
         </tr>
         <tr>
           <th>Bytes/Second</th>
-          <td id="ram-bps">1</td>
+          <td id="ram-bps" class="c-data"1</td>
         </tr>
           <th>Level</th>
-          <td id="av-level">1</td>
-          <td rowspan="2"><input type="button" value="Anti-Virus" id="av-btn" onClick="Upgrade(3);"></td>
+          <td id="av-level" class="c-data">1</td>
+          <td rowspan="2" class="c-button"><input type="button" value="Anti-Virus" id="av-btn" onClick="Upgrade(3);"></td>
         </tr>
         <tr>
           <th>Bytes/Second</th>
-          <td id="av-bps">1</td>
+          <td id="av-bps" class="c-data">1</td>
         </tr>
           <th>Level</th>
-          <td id="mw-level">1</td>
-          <td rowspan="2"><input type="button" value="Malware Agent" id="mw-btn" onClick="Upgrade(4);"></td>
+          <td id="mw-level" class="c-data">1</td>
+          <td rowspan="2"  class="c-button"><input type="button" value="Malware Agent" id="mw-btn" onClick="Upgrade(4);"></td>
         </tr>
         <tr>
           <th>Bytes/Second</th>
-          <td id="mw-bps">1</td>
+          <td id="mw-bps" class="c-data">1</td>
         </tr>
       </table>
-      <table>
+      <table id="upgrade-points">
         <tr>
           <th colspan="2">UPGRADE POINTS</th>
         </tr>
+				<tr>
+					<th>Used</th>
+					<th>Available</th>
+				</tr>
         <tr>
           <td id="used-upgrade">0</td>
           <td id="available-upgrade">0</td>
