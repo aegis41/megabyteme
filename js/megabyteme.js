@@ -45,7 +45,20 @@ function MakeBaddie()
 	// if there are less than 5 baddies
 	if (Baddies.length < 5)
 	{
-		Baddies[Baddies.length] = new Baddie("M",100,100);
+		// there's a chance to spawn a baddie
+		var chance = Math.random();
+		if (chance > .75)
+		{
+			var power = game.baddielvl * 10;
+			chance = Math.random();
+			// if chance is more than 50% then make Malware, otherwise make virus
+			if (chance > .5)
+			{
+				Baddies[Baddies.length] = new Baddie("M",power,power);
+			} else {
+				Baddies[Baddies.length] = new Baddie("V",power,power);
+			}
+		}
 	}
 }
 // the function to initialize the components
@@ -54,8 +67,8 @@ function InitComponents()
   Components[0] = new Component("CPU",10,1,0,"CPU");
   Components[1] = new Component("MOBO",50,5,0,"MoBo");
   Components[2] = new Component("RAM",1000,10,0,"RAM");
-	Components[3] = new Component("AV",100,10,1,"Anti-Virus");
-	Components[4] = new Component("MW",100,10,1,"Malware Agent");
+	Components[3] = new Component("AV",10,10,0,"Anti-Virus");
+	Components[4] = new Component("MW",10,10,0,"Malware Agent");
 }
 
 // the function to initialize the display
@@ -68,17 +81,26 @@ function UpdateDisplay()
 		var bps = idname + "-bps";
 		var btn = idname + "-btn";
     document.getElementById(lvl).innerHTML = Components[i].level;
-    document.getElementById(bps).innerHTML = Components[i].persec;
+    document.getElementById(bps).innerHTML = Components[i].persec + " / " + Components[i].level * Components[i].persec;
 		document.getElementById(btn).value = Components[i].text + " (" + Components[i].cost + ")";
 		document.getElementById("bytes-per-sec").innerHTML = game.bps;
 	}
+	// clear the baddie track
+	for (var i = 0; i < 5; i++)
+	{
+		var idtype = "malsoft" + i;
+		var idstat = "malstat" + i;
+		document.getElementById(idtype).innerHTML = "&nbsp;";
+		document.getElementById(idstat).innerHTML = "&nbsp;";
+	}
+	
+	// fill the baddie track
 	for (var i = 0; i < Baddies.length; i++)
 	{
 		var idtype = "malsoft" + i;
 		var idstat = "malstat" + i;
 		document.getElementById(idtype).innerHTML = Baddies[i].type;
-		document.getElementById(idstat).innerHTML = Baddies[i].power + " / " + Baddies[i].slowreward;
-		
+		document.getElementById(idstat).innerHTML = Baddies[i].power + " / " + Baddies[i].slowreward;	
 	}
 	document.getElementById("total-bytes").innerHTML = game.bytes;
 	document.getElementById("warrior-bytes").innerHTML = game.warriors;
@@ -99,10 +121,10 @@ function Fight()
 		if (Baddies[0].type == "V")
 		{
 			// then use the anti-virus level to combat the baddie
-			damage = (game.warriors > (Components[3].level * 100)) ? Components[3].level * 100 : game.warriors;
+			damage = (game.warriors > (Components[3].level * Components[3].persec)) ? Components[3].level * Components[3].persec : game.warriors;
 		} else if (Baddies[0].type == "M") {
 			// or use the malware agent level to combat the baddie
-			damage = (game.warriors > (Components[4].level * 100)) ? Components[4].level * 100 : game.warriors;
+			damage = (game.warriors > (Components[4].level * Components[4].persec)) ? Components[4].level * Components[4].persec : game.warriors;
 		}
 		
 		// if the baddie has less power than the damage
@@ -151,10 +173,13 @@ function Tick()
 	// run the script to FIIIIIIIIIIIIIGHT!!
 	Fight();
 	// if the baddie wasn't killed in 1 fight, reduce the slow reward
-	if (Baddies[0].ticks < 5)
+	if (Baddies.length > 0)
 	{
-		Baddies[0].ticks++;
-		Baddies[0].slowreward = Baddies[0].reward * (1 - Baddies[0].ticks/10);
+		if (Baddies[0].ticks < 5)
+		{
+			Baddies[0].ticks++;
+			Baddies[0].slowreward = Baddies[0].reward * (1 - Baddies[0].ticks/10);
+		}
 	}
 	// give the user some points to update
 	game.upgradeavail++;
