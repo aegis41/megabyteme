@@ -10,11 +10,14 @@ var Baddies = [];
 // the object constructor for save games
 function GameSave()
 {
-  this.bytes = 0;					// the current level of bytes
-	this.bps = 1;						// the current level of bytes per second
-	this.baddielvl = 1;			// the baddies' level
-	this.warriors = 0;			// the current level of warriors
-	this.sacrificed = 0;		// the current level of sacrificed
+  this.bytes = 0;						// the current level of bytes
+	this.bps = 1;							// the current level of bytes per second
+	this.baddielvl = 1;				// the baddies' level
+	this.warriors = 0;				// the current level of warriors
+	this.sacrificed = 0;			// the current level of sacrificed
+	this.upgradeavail = 0;	// the number of available upgrade points
+	this.upgradespent = 0;		// the number of spent upgrade points
+	this.defeated = 0;				// the number of defeated baddies
 }
 
 //the object model for components
@@ -33,6 +36,8 @@ function Baddie(type, power, reward)
 	this.type = type;
 	this.power = power;
 	this.reward = reward;
+	this.slowreward = reward;
+	this.ticks = 0;
 }
 // the function to make a new baddie
 function MakeBaddie()
@@ -72,12 +77,15 @@ function UpdateDisplay()
 		var idtype = "malsoft" + i;
 		var idstat = "malstat" + i;
 		document.getElementById(idtype).innerHTML = Baddies[i].type;
-		document.getElementById(idstat).innerHTML = Baddies[i].power + " / " + Baddies[i].reward;
+		document.getElementById(idstat).innerHTML = Baddies[i].power + " / " + Baddies[i].slowreward;
 		
 	}
 	document.getElementById("total-bytes").innerHTML = game.bytes;
 	document.getElementById("warrior-bytes").innerHTML = game.warriors;
 	document.getElementById("sacrificed-bytes").innerHTML = game.sacrificed;
+	document.getElementById("total-fixed").innerHTML = game.defeated;
+	document.getElementById("available-upgrade").innerHTML = game.upgradeavail;
+	document.getElementById("used-upgrade").innerHTML = game.upgradespent;
 }
 
 function Fight()
@@ -108,6 +116,7 @@ function Fight()
 			damage -= Baddies[0].power;
 			// then do damage equal to the power
 			Baddies[0].power -= Baddies[0].power;
+			KillBaddie();
 		} else {
 			// decrease the warriors
 			game.warriors -= damage;
@@ -119,24 +128,46 @@ function Fight()
 	}
 }
 
+function KillBaddie()
+{
+	game.defeated++;
+	game.upgradeavail += Baddies[0].slowreward;
+	Baddies.shift();
+	UpdateDisplay();
+}
+
 
 // the function that runs at the interval
 function Tick()
 {
-
+	// get the bytes per second
 	game.bps = BytesPerSecond();
+	// increase the game bytes by this much
 	game.bytes += game.bps;
+	// also increase the warriors by this much
 	game.warriors += game.bps;
+	// run the script to make a baddie
 	MakeBaddie();
+	// run the script to FIIIIIIIIIIIIIGHT!!
 	Fight();
+	// if the baddie wasn't killed in 1 fight, reduce the slow reward
+	if (Baddies[0].ticks < 5)
+	{
+		Baddies[0].ticks++;
+		Baddies[0].slowreward = Baddies[0].reward * (1 - Baddies[0].ticks/10);
+	}
+	// give the user some points to update
+	game.upgradeavail++;
+	// update the display
 	UpdateDisplay();
 }
 
 function Upgrade(id)
 {
-  if (game.bytes >= Components[id].cost) // is there enough money?
+  if (game.upgradeavail >= Components[id].cost) // is there enough upgrade available?
   {
-    game.bytes -= Components[id].cost; // decrease the money by the cost
+    game.upgradeavail -= Components[id].cost; // decrease the available by the cost
+		game.upgradespent += Components[id].cost;	// increase the spend upgrade by the cost
     Components[id].level++; //increase the component level
     Components[id].cost = Math.round(Components[id].cost * 1.25);
 		game.bps = BytesPerSecond();
