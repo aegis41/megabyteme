@@ -7,6 +7,9 @@ var Components = [];
 // the array of malicious software
 var Baddies = [];
 
+// the array of floating texts
+var TxtFloats = [];
+
 // the object constructor for save games
 function GameSave()
 {
@@ -15,7 +18,7 @@ function GameSave()
 	this.baddielvl = 1;				// the baddies' level
 	this.warriors = 0;				// the current level of warriors
 	this.sacrificed = 0;			// the current level of sacrificed
-	this.upgradeavail = 0;	// the number of available upgrade points
+	this.upgradeavail = 0;		// the number of available upgrade points
 	this.upgradespent = 0;		// the number of spent upgrade points
 	this.defeated = 0;				// the number of defeated baddies
 }
@@ -37,8 +40,18 @@ function Baddie(type, power, reward)
 	this.power = power;
 	this.reward = reward;
 	this.slowreward = reward;
-	this.ticks = 0;
+	this.ticks = -2;
 }
+
+// the object model for float texts
+function TxtFloat (text)
+{
+	this.id = 0;
+	this.time = FloatTimer;
+	this.opacity = 100;
+	this.text = text;
+}
+
 // the function to make a new baddie
 function MakeBaddie()
 {
@@ -47,16 +60,16 @@ function MakeBaddie()
 	{
 		// there's a chance to spawn a baddie
 		var chance = Math.random();
-		if (chance > .75)
+		if (chance > .15)
 		{
 			var power = game.baddielvl * 10;
 			chance = Math.random();
 			// if chance is more than 50% then make Malware, otherwise make virus
 			if (chance > .5)
 			{
-				Baddies[Baddies.length] = new Baddie("M",power,power);
+				Baddies[Baddies.length] = new Baddie("M",power,power/2);
 			} else {
-				Baddies[Baddies.length] = new Baddie("V",power,power);
+				Baddies[Baddies.length] = new Baddie("V",power,power/2);
 			}
 		}
 	}
@@ -153,6 +166,10 @@ function Fight()
 function KillBaddie()
 {
 	game.defeated++;
+	if (game.defeated > (2 * game.baddielvl + 1) * 10)
+	{
+		game.baddielvl++;
+	}
 	game.upgradeavail += Baddies[0].slowreward;
 	Baddies.shift();
 	UpdateDisplay();
