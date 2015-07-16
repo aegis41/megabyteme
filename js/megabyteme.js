@@ -1,5 +1,5 @@
 // the timer to run code every second
-var Timer = window.setInterval(function(){Tick()},500);
+var Timer = window.setInterval(function(){Tick()},1000);
 
 // the array of components
 var Components = [];
@@ -115,7 +115,9 @@ function UpdateDisplay()
 		var idtype = "malsoft" + i;
 		var idstat = "malstat" + i;
 		document.getElementById(idtype).innerHTML = "&nbsp;";
+		document.getElementById(idtype).className = "";
 		document.getElementById(idstat).innerHTML = "&nbsp;";
+		document.getElementById(idstat).className = "";
 	}
 	
 	// fill the baddie track
@@ -232,6 +234,7 @@ function Upgrade(id)
     game.upgradeavail -= Components[id].cost; // decrease the available by the cost
 		game.upgradespent += Components[id].cost;	// increase the spend upgrade by the cost
     Components[id].level++; //increase the component level
+		Components[id].power += Math.floor(Components[id].power / Components[id].level);
     Components[id].cost = Math.round(Components[id].cost * 1.25);
 		game.bps = BytesPerSecond();
 		UpdateDisplay();

@@ -8,7 +8,13 @@ table
 
 #container
 {
+	font-family: sans-serif;
 	width: 900px;
+}
+
+#container p 
+{
+	font-size: 10px;;
 }
 
 #left
@@ -150,6 +156,17 @@ table
 / Button Styles
 /
 *********************************/
+
+#right input[type="button"]
+{
+	font-weight: 800;
+	font-size: 12pt;;
+	color: black;
+	-webkit-text-fill-color: white;
+	-webkit-text-stroke-width: 1px;
+	-webkit-text-stroke-color: black;
+	
+}
 .cpu-btn
 {
 	background: #B20000;
@@ -190,7 +207,10 @@ input:disabled
 	background: #0000B2;
 }
 
-
+table#mal-softs
+{
+	color: white;	border-collapse: collapse;
+}
 
 
 
