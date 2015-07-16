@@ -18,7 +18,7 @@ function GameSave()
 	this.baddielvl = 1;				// the baddies' level
 	this.warriors = 0;				// the current level of warriors
 	this.sacrificed = 0;			// the current level of sacrificed
-	this.upgradeavail = 0;		// the number of available upgrade points
+	this.upgradeavail = 100;		// the number of available upgrade points
 	this.upgradespent = 0;		// the number of spent upgrade points
 	this.defeated = 0;				// the number of defeated baddies
 }
@@ -81,8 +81,8 @@ function InitComponents()
   Components[0] = new Component("CPU",10,1,0,"CPU");
   Components[1] = new Component("MOBO",50,5,0,"MoBo");
   Components[2] = new Component("RAM",1000,10,0,"RAM");
-	Components[3] = new Component("AV",100,10,0,"Anti-Virus");
-	Components[4] = new Component("MW",100,10,0,"Malware Agent");
+	Components[3] = new Component("AV",100,10,1,"Anti-Virus");
+	Components[4] = new Component("MW",100,10,1,"Malware Agent");
 }
 
 // the function to initialize the display
@@ -123,6 +123,8 @@ function UpdateDisplay()
 	document.getElementById("available-upgrade").innerHTML = game.upgradeavail;
 	document.getElementById("used-upgrade").innerHTML = game.upgradespent;
 	document.getElementById("bad-level").innerHTML = game.baddielvl;
+	document.getElementById("progress-bar").style.width = GetProgress() + "%";
+	document.getElementById("progress-bar").innerHTML = game.defeated + " / " + game.baddielvl * 20;
 }
 
 function Fight()
@@ -168,7 +170,7 @@ function Fight()
 function KillBaddie()
 {
 	game.defeated++;
-	if (game.defeated > (2 * game.baddielvl + 1) * 10)
+	if (game.defeated > 20 * (game.baddielvl + 1))
 	{
 		game.baddielvl++;
 	}
@@ -230,6 +232,19 @@ function BytesPerSecond()
     bps += (Components[i].level * Components[i].persec);
   }
 	return bps;
+}
+
+function GetProgress()
+{
+	var currentlvl = (game.baddielvl -1) * 20;
+	var nextlvl = (game.baddielvl) * 20;
+	var needed = nextlvl - currentlvl;
+	var progress = Math.floor(((game.defeated - currentlvl) / needed) * 100);
+	if (progress < 1)
+	{
+		progress = 1;
+	}
+	return progress;
 }
 
 window.onload = function()
