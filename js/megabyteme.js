@@ -40,7 +40,7 @@ function Baddie(type, power, reward)
 	this.power = power;
 	this.reward = reward;
 	this.slowreward = reward;
-	this.ticks = -2;
+	this.ticks = 0;
 }
 
 // the object model for float texts
@@ -62,14 +62,14 @@ function MakeBaddie()
 		var chance = Math.random();
 		if (chance > .15)
 		{
-			var power = game.baddielvl * 10;
+			var power = game.baddielvl * 100;
 			chance = Math.random();
 			// if chance is more than 50% then make Malware, otherwise make virus
 			if (chance > .5)
 			{
-				Baddies[Baddies.length] = new Baddie("M",power,power/2);
+				Baddies[Baddies.length] = new Baddie("M",power,Math.round(power/2));
 			} else {
-				Baddies[Baddies.length] = new Baddie("V",power,power/2);
+				Baddies[Baddies.length] = new Baddie("V",power,Math.round(power/2));
 			}
 		}
 	}
@@ -77,11 +77,12 @@ function MakeBaddie()
 // the function to initialize the components
 function InitComponents()
 {
+	// name, cost, power, level
   Components[0] = new Component("CPU",10,1,0,"CPU");
   Components[1] = new Component("MOBO",50,5,0,"MoBo");
   Components[2] = new Component("RAM",1000,10,0,"RAM");
-	Components[3] = new Component("AV",10,10,0,"Anti-Virus");
-	Components[4] = new Component("MW",10,10,0,"Malware Agent");
+	Components[3] = new Component("AV",100,10,0,"Anti-Virus");
+	Components[4] = new Component("MW",100,10,0,"Malware Agent");
 }
 
 // the function to initialize the display
@@ -121,6 +122,7 @@ function UpdateDisplay()
 	document.getElementById("total-fixed").innerHTML = game.defeated;
 	document.getElementById("available-upgrade").innerHTML = game.upgradeavail;
 	document.getElementById("used-upgrade").innerHTML = game.upgradespent;
+	document.getElementById("bad-level").innerHTML = game.baddielvl;
 }
 
 function Fight()
@@ -192,10 +194,13 @@ function Tick()
 	// if the baddie wasn't killed in 1 fight, reduce the slow reward
 	if (Baddies.length > 0)
 	{
-		if (Baddies[0].ticks < 5)
+		// increment the ticks
+		Baddies[0].ticks++;
+		// from ticks 2 to 12, lower the reward. 
+		if (Baddies[0].ticks > 2 && Baddies[0].ticks <= 10)
 		{
-			Baddies[0].ticks++;
-			Baddies[0].slowreward = Baddies[0].reward * (1 - Baddies[0].ticks/10);
+			// 100% - (half the ticks - 2) / 10 times the original reward
+			Baddies[0].slowreward = Math.round((1 - ((Baddies[0].ticks / 2)/10)) * Baddies[0].reward);
 		}
 	}
 	// give the user some points to update
