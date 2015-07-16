@@ -1,5 +1,5 @@
 // the timer to run code every second
-var Timer = window.setInterval(function(){Tick()},1000);
+var Timer = window.setInterval(function(){Tick()},500);
 
 // the array of components
 var Components = [];
@@ -18,28 +18,31 @@ function GameSave()
 	this.baddielvl = 1;				// the baddies' level
 	this.warriors = 0;				// the current level of warriors
 	this.sacrificed = 0;			// the current level of sacrificed
-	this.upgradeavail = 100;		// the number of available upgrade points
+	this.upgradeavail = 1000;	// the number of available upgrade points
 	this.upgradespent = 0;		// the number of spent upgrade points
-	this.defeated = 0;				// the number of defeated baddies
+	this.defeated = 0;				// the total number of defeated baddies
+	this.lvldefeated = 0;			// the number of baddies defeated this level
 }
 
 //the object model for components
-function Component(name, cost, persec, level,text)
+function Component(name, cost, persec, level, text, hexcolor)
 {
   this.name = name;
   this.cost = cost;
   this.persec = persec;
   this.level = level;
 	this.text = text;
+	this.hexcolor = hexcolor;
 }
 
 // the object model for the baddies
-function Baddie(type, power, reward)
+function Baddie(type, power, reward, myclass)
 {
 	this.type = type;
 	this.power = power;
 	this.reward = reward;
 	this.slowreward = reward;
+	this.myclass = myclass;
 	this.ticks = 0;
 }
 
@@ -67,9 +70,9 @@ function MakeBaddie()
 			// if chance is more than 50% then make Malware, otherwise make virus
 			if (chance > .5)
 			{
-				Baddies[Baddies.length] = new Baddie("M",power,Math.round(power/2));
+				Baddies[Baddies.length] = new Baddie("M",power,Math.round(power/2),"baddie-mw");
 			} else {
-				Baddies[Baddies.length] = new Baddie("V",power,Math.round(power/2));
+				Baddies[Baddies.length] = new Baddie("V",power,Math.round(power/2),"baddie-av");
 			}
 		}
 	}
@@ -78,11 +81,11 @@ function MakeBaddie()
 function InitComponents()
 {
 	// name, cost, power, level
-  Components[0] = new Component("CPU",10,1,0,"CPU");
-  Components[1] = new Component("MOBO",50,5,0,"MoBo");
-  Components[2] = new Component("RAM",1000,10,0,"RAM");
-	Components[3] = new Component("AV",100,10,1,"Anti-Virus");
-	Components[4] = new Component("MW",100,10,1,"Malware Agent");
+  Components[0] = new Component("CPU",10,1,0,"CPU","#B20000");
+  Components[1] = new Component("MOBO",50,5,0,"MoBo","#248F24");
+  Components[2] = new Component("RAM",1000,10,0,"RAM","#B26B00");
+	Components[3] = new Component("AV",100,10,1,"Anti-Virus", "#8F006B");
+	Components[4] = new Component("MW",100,10,1,"Malware Agent", "#0000B2");
 }
 
 // the function to initialize the display
@@ -97,6 +100,13 @@ function UpdateDisplay()
     document.getElementById(lvl).innerHTML = Components[i].level;
     document.getElementById(bps).innerHTML = Components[i].persec + " / " + Components[i].level * Components[i].persec;
 		document.getElementById(btn).value = Components[i].text + " (" + Components[i].cost + ")";
+		if (game.upgradeavail >= Components[i].cost)
+		{
+			document.getElementById(btn).disabled = false;
+		} else {
+			document.getElementById(btn).disabled = true;
+		}
+		
 		document.getElementById("bytes-per-sec").innerHTML = game.bps;
 	}
 	// clear the baddie track
@@ -114,7 +124,9 @@ function UpdateDisplay()
 		var idtype = "malsoft" + i;
 		var idstat = "malstat" + i;
 		document.getElementById(idtype).innerHTML = Baddies[i].type;
+		document.getElementById(idtype).className = Baddies[i].myclass;
 		document.getElementById(idstat).innerHTML = Baddies[i].power + " / " + Baddies[i].slowreward;	
+		document.getElementById(idstat).className = Baddies[i].myclass;	
 	}
 	document.getElementById("total-bytes").innerHTML = game.bytes;
 	document.getElementById("warrior-bytes").innerHTML = game.warriors;
@@ -124,7 +136,7 @@ function UpdateDisplay()
 	document.getElementById("used-upgrade").innerHTML = game.upgradespent;
 	document.getElementById("bad-level").innerHTML = game.baddielvl;
 	document.getElementById("progress-bar").style.width = GetProgress() + "%";
-	document.getElementById("progress-bar").innerHTML = game.defeated + " / " + game.baddielvl * 20;
+	document.getElementById("progress-bar").innerHTML = game.lvldefeated + " / " + game.baddielvl * 20;
 }
 
 function Fight()
@@ -170,9 +182,11 @@ function Fight()
 function KillBaddie()
 {
 	game.defeated++;
-	if (game.defeated > 20 * (game.baddielvl + 1))
+	game.lvldefeated++;
+	if (game.lvldefeated > 20 * game.baddielvl)
 	{
 		game.baddielvl++;
+		game.lvldefeated = 0;
 	}
 	game.upgradeavail += Baddies[0].slowreward;
 	Baddies.shift();
@@ -237,9 +251,10 @@ function BytesPerSecond()
 function GetProgress()
 {
 	var currentlvl = (game.baddielvl -1) * 20;
+	// the number needed to reach the next level
 	var nextlvl = (game.baddielvl) * 20;
-	var needed = nextlvl - currentlvl;
-	var progress = Math.floor(((game.defeated - currentlvl) / needed) * 100);
+	// 
+	var progress = Math.floor((game.lvldefeated / nextlvl) * 100);
 	if (progress < 1)
 	{
 		progress = 1;
