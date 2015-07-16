@@ -46,11 +46,20 @@ table
 	width: 48%;
 }
 
-#components input
+#components input[type="button"]
 {
 	width:98%;
-	height:30px;
+	height:98%;
 }
+
+
+.cpu-btn
+{
+	background: url(../images/cpu-back.jpg);
+	background-opacity: 0.5;
+	background-repeat: no-repeat;
+}
+
 
 #upgrade-points td
 {

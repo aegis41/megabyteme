@@ -30,7 +30,7 @@
           <td id="warrior-bytes">0</td>
         </tr>
       </table>
-      <h2>Malicious Softwares</h2>
+      <h2>Malicious Softwares: Level <span id="bad-level">1</span></h2>
       <table id="mal-softs">
         <tr>
           <td id="malsoft4">&nbsp;</td>
@@ -53,7 +53,7 @@
           <th>Total Fixes</th><td id="total-fixed">0</td>
         </tr>
       </table>
-      <input type="button" value="FIREWALL" id="firewall" onClick="FirewallUpgrade();">
+      <!-- <input type="button" value="FIREWALL" id="firewall" onClick="FirewallUpgrade();"> -->
     </div>
     <div id="right">
 			<h2>Components</h2>
@@ -61,7 +61,7 @@
         <tr>
           <th>Level</th>
           <td id="cpu-level" class="c-data">1</td>
-          <td rowspan="2" class="c-button"><input type="button" value="CPU" id="cpu-btn" onClick="Upgrade(0);"></td>
+          <td rowspan="2" class="c-button"><input type="button" value="CPU" id="cpu-btn" class="cpu-btn" onClick="Upgrade(0);"></td>
         </tr>
         <tr>
           <th>Bytes/Second</th>
