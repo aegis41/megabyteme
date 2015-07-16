@@ -86,6 +86,9 @@ table
 	border-bottom-left-radius: 20px;
 	overflow: hidden;
 }
+.prog-bar {
+	text-align: center;
+}
 
 /**********************************
 /
@@ -141,3 +144,65 @@ table
 	width: 19%;
 	text-align: center;
 }
+
+/*********************************
+/
+/ Button Styles
+/
+*********************************/
+.cpu-btn
+{
+	background: #B20000;
+}
+
+.mobo-btn
+{
+	background: #248F24;
+}
+
+.ram-btn
+{
+	background: #B26B00;
+}
+
+.av-btn
+{
+	background: #8F006B;
+}
+
+.mw-btn
+{
+	background: #0000B2;
+}
+
+input:disabled
+{
+	background: none;
+}
+
+.baddie-av
+{
+	background: #8F006B;
+}
+
+.baddie-mw
+{
+	background: #0000B2;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
