@@ -84,8 +84,8 @@ function InitComponents()
   Components[0] = new Component("CPU",10,1,0,"CPU","#B20000");
   Components[1] = new Component("MOBO",50,5,0,"MoBo","#248F24");
   Components[2] = new Component("RAM",1000,10,0,"RAM","#B26B00");
-	Components[3] = new Component("AV",100,10,1,"Anti-Virus", "#8F006B");
-	Components[4] = new Component("MW",100,10,1,"Malware Agent", "#0000B2");
+	Components[3] = new Component("AV",50,10,1,"Anti-Virus", "#8F006B");
+	Components[4] = new Component("MW",50,10,1,"Malware Agent", "#0000B2");
 }
 
 // the function to initialize the display
@@ -217,12 +217,12 @@ function Tick()
 		// from ticks 2 to 12, lower the reward. 
 		if (Baddies[0].ticks > 2 && Baddies[0].ticks <= 10)
 		{
-			// 100% - (half the ticks - 2) / 10 times the original reward
-			Baddies[0].slowreward = Math.round((1 - ((Baddies[0].ticks / 2)/10)) * Baddies[0].reward);
+			// 100% - (quarter the ticks - 2) / 10 times the original reward
+			Baddies[0].slowreward = Math.round((1 - ((Baddies[0].ticks / 4)/10)) * Baddies[0].reward);
 		}
 	}
 	// give the user some points to update
-	game.upgradeavail++;
+	game.upgradeavail += game.baddielvl+1;
 	// update the display
 	UpdateDisplay();
 }
@@ -234,9 +234,9 @@ function Upgrade(id)
     game.upgradeavail -= Components[id].cost; // decrease the available by the cost
 		game.upgradespent += Components[id].cost;	// increase the spend upgrade by the cost
     Components[id].level++; //increase the component level
-    if (id > 3)
+    if (id > 2)
     {
-    	Components[id].cost = Math.round(Components[id].cost * 0.625);
+    	Components[id].cost = Math.round(Components[id].cost * 1.125);
     } else {
 	Components[id].cost = Math.round(Components[id].cost * 1.25);
     }
