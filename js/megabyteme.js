@@ -1,5 +1,5 @@
 // the timer to run code every second
-var Timer = window.setInterval(function(){Tick()},1000);
+var Timer = window.setInterval(function(){Tick()},500);
 
 // the array of components
 var Components = [];
@@ -234,7 +234,13 @@ function Upgrade(id)
     game.upgradeavail -= Components[id].cost; // decrease the available by the cost
 		game.upgradespent += Components[id].cost;	// increase the spend upgrade by the cost
     Components[id].level++; //increase the component level
-    Components[id].cost = Math.round(Components[id].cost * 1.25);
+    if (id > 3)
+    {
+    	Components[id].cost = Math.round(Components[id].cost * 0.625);
+    } else {
+	Components[id].cost = Math.round(Components[id].cost * 1.25);
+    }
+
 		game.bps = BytesPerSecond();
 		UpdateDisplay();
 	}
@@ -242,12 +248,12 @@ function Upgrade(id)
 
 function BytesPerSecond()
 {
-	var bps = 1;
+	var bps = game.baddielvl + 1;
   for(var i = 0; i < 3; i++)
   {
     bps += (Components[i].level * Components[i].persec);
   }
-	return bps;
+	return bps*2;
 }
 
 function GetProgress()
