@@ -20,26 +20,26 @@ var TxtFloats = [],
 // the object constructor for save games
 function GameSave()
 {
-    this.bytes = 0;						// the current level of bytes
-    this.bps = 1;							// the current level of bytes per second
-    this.baddielvl = 1;				// the baddies' level
-    this.warriors = 0;				// the current level of warriors
-    this.sacrificed = 0;			// the current level of sacrificed
-    this.upgradeavail = 1000;	// the number of available upgrade points
-    this.upgradespent = 0;		// the number of spent upgrade points
-    this.defeated = 0;				// the total number of defeated baddies
-    this.lvldefeated = 0;			// the number of baddies defeated this level
+    this.bytes = 0;                 // the current level of bytes
+    this.bps = 1;                   // the current level of bytes per second
+    this.baddielvl = 1;             // the baddies' level
+    this.warriors = 0;              // the current level of warriors
+    this.sacrificed = 0;            // the current level of sacrificed
+    this.upgradeavail = 1000;       // the number of available upgrade points
+    this.upgradespent = 0;          // the number of spent upgrade points
+    this.defeated = 0;              // the total number of defeated baddies
+    this.lvldefeated = 0;           // the number of baddies defeated this level
 }
 
 //the object model for components
 function Component(name, cost, persec, level, text, hexcolor)
 {
-  this.name = name;
-  this.cost = cost;
-  this.persec = persec;
-  this.level = level;
+    this.name = name;
+    this.cost = cost;
+    this.persec = persec;
+    this.level = level;
     this.text = text;
-	this.hexcolor = hexcolor;
+    this.hexcolor = hexcolor;
 }
 
 // the object model for the baddies
@@ -243,6 +243,8 @@ function Tick()
 
 	// give the user some points to update
 	game.upgradeavail += game.baddielvl+1;
+    // save the game
+    saveGame();
 	// update the display
 	UpdateDisplay();
 }
@@ -292,9 +294,13 @@ function GetProgress()
 
 window.onload = function()
 {
-  window.game = new GameSave();
-  InitComponents();
-	UpdateDisplay();
+    window.game = new GameSave();
+    if (localStorage.getItem("save")) {
+        loadGame();
+    } else {
+        InitComponents();
+    }
+        UpdateDisplay();       
 }
 
 function CreateFloat(text) {
@@ -334,4 +340,17 @@ function Refresh() {
 
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function saveGame() {
+    game.components = Components;
+    game.baddies = Baddies;
+    localStorage.setItem("save", JSON.stringify(game));
+}
+
+function loadGame() {
+    var savedGame = JSON.parse(localStorage.getItem("save"));
+    Components = savedGame.components;
+    Baddies = savedGame.baddies;
+    game = savedGame;
 }
