@@ -1,5 +1,6 @@
 // the timer to run code every second
-var Timer = window.setInterval(function(){Tick()},500);
+var Timer = window.setInterval(function(){Tick()},500),
+    Timer2 = window.setInterval(function(){Refresh()},RefreshSpeed);
 
 // the array of components
 var Components = [];
@@ -7,8 +8,12 @@ var Components = [];
 // the array of malicious software
 var Baddies = [];
 
-// the array of floating texts
-var TxtFloats = [];
+// the array of floating texts and float related stuffs
+var TxtFloats = [],
+    FloatTimer = 3,
+    RefreshSpeed = 10,
+    FloatIncrement = 1000 / RefreshSpeed * FloatTimer,
+    FadeSpeed = 300 / FloatIncrement;
 
 // the object constructor for save games
 function GameSave()
@@ -31,7 +36,7 @@ function Component(name, cost, persec, level, text, hexcolor)
   this.cost = cost;
   this.persec = persec;
   this.level = level;
-	this.text = text;
+    this.text = text;
 	this.hexcolor = hexcolor;
 }
 
@@ -80,12 +85,12 @@ function MakeBaddie()
 // the function to initialize the components
 function InitComponents()
 {
-	// name, cost, power, level
-  Components[0] = new Component("CPU",10,1,0,"CPU","#B20000");
-  Components[1] = new Component("MOBO",50,5,0,"MoBo","#248F24");
-  Components[2] = new Component("RAM",1000,10,0,"RAM","#B26B00");
-	Components[3] = new Component("AV",50,10,1,"Anti-Virus", "#8F006B");
-	Components[4] = new Component("MW",50,10,1,"Malware Agent", "#0000B2");
+    // name, cost, power, level
+    Components[0] = new Component("CPU",10,1,0,"CPU","#B20000");
+    Components[1] = new Component("MOBO",50,5,0,"MoBo","#248F24");
+    Components[2] = new Component("RAM",1000,10,0,"RAM","#B26B00");
+    Components[3] = new Component("AV",50,10,3,"Anti-Virus", "#8F006B");
+    Components[4] = new Component("MW",50,10,3,"Malware Agent", "#0000B2");
 }
 
 // the function to initialize the display
@@ -97,9 +102,9 @@ function UpdateDisplay()
 		var lvl = idname + "-level";
 		var bps = idname + "-bps";
 		var btn = idname + "-btn";
-    document.getElementById(lvl).innerHTML = Components[i].level;
-    document.getElementById(bps).innerHTML = Components[i].persec + " / " + Components[i].level * Components[i].persec;
-		document.getElementById(btn).value = Components[i].text + " (" + Components[i].cost + ")";
+        document.getElementById(lvl).innerHTML = Components[i].level;
+        document.getElementById(bps).innerHTML = Components[i].level * Components[i].persec;
+        document.getElementById(btn).value = Components[i].text + " (" + numberWithCommas(Components[i].cost) + ")";
 		if (game.upgradeavail >= Components[i].cost)
 		{
 			document.getElementById(btn).disabled = false;
@@ -130,13 +135,13 @@ function UpdateDisplay()
 		document.getElementById(idstat).innerHTML = Baddies[i].power + " / " + Baddies[i].slowreward;	
 		document.getElementById(idstat).className = Baddies[i].myclass;	
 	}
-	document.getElementById("total-bytes").innerHTML = game.bytes;
-	document.getElementById("warrior-bytes").innerHTML = game.warriors;
-	document.getElementById("sacrificed-bytes").innerHTML = game.sacrificed;
-	document.getElementById("total-fixed").innerHTML = game.defeated;
-	document.getElementById("available-upgrade").innerHTML = game.upgradeavail;
-	document.getElementById("used-upgrade").innerHTML = game.upgradespent;
-	document.getElementById("bad-level").innerHTML = game.baddielvl;
+	document.getElementById("total-bytes").innerHTML = numberWithCommas(game.bytes);
+	document.getElementById("warrior-bytes").innerHTML = numberWithCommas(game.warriors);
+	document.getElementById("sacrificed-bytes").innerHTML = numberWithCommas(game.sacrificed);
+	document.getElementById("total-fixed").innerHTML = numberWithCommas(game.defeated);
+	document.getElementById("available-upgrade").innerHTML = numberWithCommas(game.upgradeavail);
+	document.getElementById("used-upgrade").innerHTML = numberWithCommas(game.upgradespent);
+	document.getElementById("bad-level").innerHTML = numberWithCommas(game.baddielvl);
 	document.getElementById("progress-bar").style.width = GetProgress() + "%";
 	document.getElementById("progress-bar").innerHTML = game.lvldefeated + " / " + game.baddielvl * 20;
 }
@@ -185,6 +190,7 @@ function KillBaddie()
 {
 	game.defeated++;
 	game.lvldefeated++;
+    CreateFloat("Baddie Level " + game.baddielvl + " defeated");
 	if (game.lvldefeated > 20 * game.baddielvl)
 	{
 		game.baddielvl++;
@@ -221,6 +227,18 @@ function Tick()
 			Baddies[0].slowreward = Math.round((1 - ((Baddies[0].ticks / 4)/10)) * Baddies[0].reward);
 		}
 	}
+
+    // update the floating texts
+    for (var i = 0; i < TxtFloats.length; i++) {
+        TxtFloats[i].time--;
+        var element = document.getElementById("Float" + TxtFloats[i].id);
+        if (TxtFloats[i].time <= 0) {
+            element.parentNode.removeChild(element);
+            TxtFloats.splice(i,1);
+            i--;
+        }
+    }
+
 	// give the user some points to update
 	game.upgradeavail += game.baddielvl+1;
 	// update the display
@@ -275,4 +293,43 @@ window.onload = function()
   window.game = new GameSave();
   InitComponents();
 	UpdateDisplay();
+}
+
+function CreateFloat(text) {
+    var el = $("#malsoft0").position();
+
+    for (var i = 0; i < TxtFloats.length; i++) {
+        if (TxtFloats[i].id > i) {break;}
+    }
+
+    var NewFloat = new TxtFloat(text);
+
+    // initialize the new float
+    NewFloat.id = i;
+    TxtFloats.splice(i, 0, NewFloat);
+    // create the new div
+    var NewDiv = document.createElement("div");
+    NewDiv.innerHTML = NewFloat.text;
+    NewDiv.className = "FloatingText";
+
+    NewDiv.id = "Float" + i;
+
+    NewDiv.style.left = el.left + "px";
+    NewDiv.style.top = el.top - 50 + "px";
+
+    document.getElementById("container").appendChild(NewDiv);
+}
+
+function Refresh() {
+    for (var i = 0; i < TxtFloats.length; i++) {
+        var element = document.getElementById("Float" + TxtFloats[i].id);
+        element.style.top = (element.offsetTop - 1) + "px";
+        TxtFloats[i].opacity -= FadeSpeed;
+        element.style.opacity = Math.floor(TxtFloats[i].opacity) / 100;
+        element.style.filter = "alpha(opacity=" + Math.floor(TxtFloats[i].opacity) + ")";
+    }
+}
+
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }

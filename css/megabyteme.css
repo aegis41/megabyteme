@@ -209,20 +209,14 @@ input:disabled
 
 table#mal-softs
 {
-	color: white;	border-collapse: collapse;
+	color: white;
+	border-collapse: collapse;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+.FloatingText {
+	background-color: cornsilk;
+	font-weight: bold;
+	width: 120px;
+	position: absolute;
+	z-index: 10;
+}
