@@ -1,3 +1,5 @@
+var TicksPerSecond = 10,
+    TickRate = 1000 / TicksPerSecond;
 // the timer to run code every second
 var Timer = window.setInterval(function(){Tick()},500),
     Timer2 = window.setInterval(function(){Refresh()},RefreshSpeed);
@@ -18,15 +20,15 @@ var TxtFloats = [],
 // the object constructor for save games
 function GameSave()
 {
-  this.bytes = 0;						// the current level of bytes
-	this.bps = 1;							// the current level of bytes per second
-	this.baddielvl = 1;				// the baddies' level
-	this.warriors = 0;				// the current level of warriors
-	this.sacrificed = 0;			// the current level of sacrificed
-	this.upgradeavail = 1000;	// the number of available upgrade points
-	this.upgradespent = 0;		// the number of spent upgrade points
-	this.defeated = 0;				// the total number of defeated baddies
-	this.lvldefeated = 0;			// the number of baddies defeated this level
+    this.bytes = 0;						// the current level of bytes
+    this.bps = 1;							// the current level of bytes per second
+    this.baddielvl = 1;				// the baddies' level
+    this.warriors = 0;				// the current level of warriors
+    this.sacrificed = 0;			// the current level of sacrificed
+    this.upgradeavail = 1000;	// the number of available upgrade points
+    this.upgradespent = 0;		// the number of spent upgrade points
+    this.defeated = 0;				// the total number of defeated baddies
+    this.lvldefeated = 0;			// the number of baddies defeated this level
 }
 
 //the object model for components
@@ -271,7 +273,7 @@ function BytesPerSecond()
   {
     bps += (Components[i].level * Components[i].persec);
   }
-	return bps*2;
+	return bps;
 }
 
 function GetProgress()
